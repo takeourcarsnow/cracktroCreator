@@ -26,6 +26,11 @@ const EFFECT_LABELS: Record<EffectType, string> = {
   twister: 'Twister',
   wireframe3d: '3D Wireframe',
   sprite: 'Sprite',
+  vhs: 'VHS',
+  bobs: 'Bobs',
+  moire: 'Moiré',
+  lensflare: 'Lens Flare',
+  vectorballs: 'Vector Balls',
 };
 
 export function PresetsPanel() {

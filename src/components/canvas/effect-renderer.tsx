@@ -22,6 +22,11 @@ import {
   TwisterRenderer,
   Wireframe3DRenderer,
   SpriteRenderer,
+  VHSRenderer,
+  BobsRenderer,
+  MoireRenderer,
+  LensFlareRenderer,
+  VectorBallsRenderer,
 } from '@/components/effects';
 
 interface EffectRendererProps {
@@ -80,6 +85,16 @@ export const EffectRenderer = memo(function EffectRenderer({
       return <Wireframe3DRenderer effect={effect} {...commonProps} />;
     case 'sprite':
       return <SpriteRenderer effect={effect} {...commonProps} />;
+    case 'vhs':
+      return <VHSRenderer effect={effect} {...commonProps} />;
+    case 'bobs':
+      return <BobsRenderer effect={effect} {...commonProps} />;
+    case 'moire':
+      return <MoireRenderer effect={effect} {...commonProps} />;
+    case 'lensflare':
+      return <LensFlareRenderer effect={effect} {...commonProps} />;
+    case 'vectorballs':
+      return <VectorBallsRenderer effect={effect} {...commonProps} />;
     default:
       return null;
   }

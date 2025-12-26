@@ -19,7 +19,12 @@ export type EffectType =
   | 'rotozoom'
   | 'twister'
   | 'wireframe3d'
-  | 'sprite';
+  | 'sprite'
+  | 'vhs'
+  | 'bobs'
+  | 'moire'
+  | 'lensflare'
+  | 'vectorballs';
 
 export type BlendMode = 
   | 'normal'
@@ -245,6 +250,63 @@ export interface SpriteEffect extends BaseEffect {
   animationAmplitude: number;
 }
 
+// New Effects (v2)
+
+export interface VHSEffect extends BaseEffect {
+  type: 'vhs';
+  scanlineIntensity: number;
+  noiseIntensity: number;
+  rgbShift: number;
+  distortion: number;
+  flickering: boolean;
+  trackingLines: boolean;
+}
+
+export interface BobsEffect extends BaseEffect {
+  type: 'bobs';
+  bobCount: number;
+  speed: number;
+  size: number;
+  colors: string[];
+  pattern: 'circle' | 'wave' | 'lissajous' | 'spiral';
+  trailLength: number;
+  glowEnabled: boolean;
+}
+
+export interface MoireEffect extends BaseEffect {
+  type: 'moire';
+  pattern: 'circles' | 'lines' | 'grid';
+  spacing: number;
+  speed: number;
+  colors: string[];
+  offsetX: number;
+  offsetY: number;
+}
+
+export interface LensFlareEffect extends BaseEffect {
+  type: 'lensflare';
+  x: number;
+  y: number;
+  size: number;
+  intensity: number;
+  colors: string[];
+  anamorphic: boolean;
+  ghostCount: number;
+}
+
+export interface VectorBallsEffect extends BaseEffect {
+  type: 'vectorballs';
+  ballCount: number;
+  size: number;
+  speed: number;
+  rotationX: number;
+  rotationY: number;
+  rotationZ: number;
+  colors: string[];
+  formation: 'cube' | 'sphere' | 'torus' | 'wave';
+  perspective: number;
+}
+
 export type Effect =
   | ScrollTextEffect
   | SineWaveEffect
@@ -264,7 +326,12 @@ export type Effect =
   | RotoZoomEffect
   | TwisterEffect
   | Wireframe3DEffect
-  | SpriteEffect;
+  | SpriteEffect
+  | VHSEffect
+  | BobsEffect
+  | MoireEffect
+  | LensFlareEffect
+  | VectorBallsEffect;
 
 // Keyframe animation types
 export interface Keyframe {

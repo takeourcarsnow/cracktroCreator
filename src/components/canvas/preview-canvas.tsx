@@ -61,6 +61,7 @@ export function PreviewCanvas({ className }: PreviewCanvasProps) {
       className={cn('flex items-center justify-center h-full p-4 overflow-hidden', className)}
     >
       <div
+        data-preview-canvas
         className="relative overflow-hidden rounded-xl shadow-2xl"
         style={{
           width: dimensions.width * zoom,

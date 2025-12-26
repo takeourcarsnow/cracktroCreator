@@ -21,6 +21,11 @@ import type {
   TwisterEffect,
   Wireframe3DEffect,
   SpriteEffect,
+  VHSEffect,
+  BobsEffect,
+  MoireEffect,
+  LensFlareEffect,
+  VectorBallsEffect,
 } from '@/types';
 import { DEFAULT_SCROLL_TEXT, DEFAULT_SINEWAVE_TEXT, MATRIX_CHARACTERS, CRACKTRO_PALETTES } from './constants';
 
@@ -284,6 +289,76 @@ export function createDefaultEffect(type: EffectType): Effect {
         animationSpeed: 1,
         animationAmplitude: 20,
       } as SpriteEffect;
+
+    case 'vhs':
+      return {
+        ...baseEffect,
+        type: 'vhs',
+        name: 'VHS Effect',
+        scanlineIntensity: 0.5,
+        noiseIntensity: 0.3,
+        rgbShift: 2,
+        distortion: 0.3,
+        flickering: true,
+        trackingLines: true,
+      } as VHSEffect;
+
+    case 'bobs':
+      return {
+        ...baseEffect,
+        type: 'bobs',
+        name: 'Bouncing Bobs',
+        bobCount: 16,
+        speed: 2,
+        size: 20,
+        colors: CRACKTRO_PALETTES.neon,
+        pattern: 'circle',
+        trailLength: 30,
+        glowEnabled: true,
+      } as BobsEffect;
+
+    case 'moire':
+      return {
+        ...baseEffect,
+        type: 'moire',
+        name: 'Moiré Pattern',
+        pattern: 'circles',
+        spacing: 15,
+        speed: 1,
+        colors: ['#FFFFFF', '#FFFFFF'],
+        offsetX: 20,
+        offsetY: 20,
+      } as MoireEffect;
+
+    case 'lensflare':
+      return {
+        ...baseEffect,
+        type: 'lensflare',
+        name: 'Lens Flare',
+        x: 70,
+        y: 30,
+        size: 50,
+        intensity: 0.8,
+        colors: ['#FFD700', '#00FFFF', '#FF00FF', '#FF6600'],
+        anamorphic: true,
+        ghostCount: 5,
+      } as LensFlareEffect;
+
+    case 'vectorballs':
+      return {
+        ...baseEffect,
+        type: 'vectorballs',
+        name: 'Vector Balls',
+        ballCount: 27,
+        size: 15,
+        speed: 1,
+        rotationX: 1,
+        rotationY: 1.5,
+        rotationZ: 0.5,
+        colors: CRACKTRO_PALETTES.neon,
+        formation: 'cube',
+        perspective: 400,
+      } as VectorBallsEffect;
 
     default:
       throw new Error(`Unknown effect type: ${type}`);

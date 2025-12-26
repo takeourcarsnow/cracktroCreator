@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
-import { Download, Code, FileJson, Film, Copy, Check } from 'lucide-react';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { Download, Code, FileJson, Film, Copy, Check, Loader2 } from 'lucide-react';
 import { useEditorStore } from '@/store';
 import {
   Dialog,
@@ -10,16 +10,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui';
+import { Button, Slider } from '@/components/ui';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { VideoRecorder, downloadBlob, type RecordingProgress } from '@/lib/video-export';
 
 export function ExportDialog() {
   const { project, exportProject } = useEditorStore();
   const [copied, setCopied] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingProgress, setRecordingProgress] = useState(0);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [recordingState, setRecordingState] = useState<RecordingProgress>({
+    status: 'idle',
+    progress: 0,
+  });
+  const [recordingDuration, setRecordingDuration] = useState(5);
+  const [recordingFps, setRecordingFps] = useState(30);
+  const [recordingQuality, setRecordingQuality] = useState(0.8);
+  const recorderRef = useRef<VideoRecorder | null>(null);
 
   const handleCopyJson = useCallback(() => {
     const json = exportProject();
@@ -124,6 +131,40 @@ export function ExportDialog() {
     URL.revokeObjectURL(url);
   }, [generateHtmlExport, project?.name]);
 
+  const handleStartRecording = useCallback(() => {
+    // Find the preview canvas
+    const canvasContainer = document.querySelector('[data-preview-canvas]');
+    const canvas = canvasContainer?.querySelector('canvas');
+    
+    if (!canvas) {
+      setRecordingState({
+        status: 'error',
+        progress: 0,
+        error: 'Could not find canvas element. Make sure the preview is visible.',
+      });
+      return;
+    }
+
+    recorderRef.current = new VideoRecorder((progress) => {
+      setRecordingState(progress);
+      
+      if (progress.status === 'complete' && progress.blob) {
+        downloadBlob(progress.blob, `${project?.name || 'cracktro'}.webm`);
+      }
+    });
+
+    recorderRef.current.startRecording(canvas, {
+      fps: recordingFps,
+      duration: recordingDuration,
+      format: 'webm',
+      quality: recordingQuality,
+    });
+  }, [project?.name, recordingDuration, recordingFps, recordingQuality]);
+
+  const handleStopRecording = useCallback(() => {
+    recorderRef.current?.stopRecording();
+  }, []);
+
   if (!project) return null;
 
   return (
@@ -191,31 +232,105 @@ export function ExportDialog() {
 
           <TabsContent value="video" className="space-y-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Record your cracktro as a video file. This feature uses the browser&apos;s
-              MediaRecorder API to capture the canvas.
+              Record your cracktro as a video file. The preview canvas will be captured.
             </p>
             
-            {isRecording ? (
-              <div className="space-y-2">
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div
-                    className="bg-purple-500 h-2 rounded-full transition-all"
-                    style={{ width: `${recordingProgress}%` }}
+            {recordingState.status === 'idle' && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Duration: {recordingDuration}s</label>
+                  <Slider
+                    value={[recordingDuration]}
+                    onValueChange={([value]) => setRecordingDuration(value)}
+                    min={1}
+                    max={30}
+                    step={1}
                   />
                 </div>
-                <p className="text-sm text-center text-gray-500">
-                  Recording... {recordingProgress}%
-                </p>
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <Film className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                <p className="text-sm text-gray-500 mb-4">
-                  Video recording coming soon!
-                </p>
-                <Button disabled className="gap-2">
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Frame Rate</label>
+                  <Select
+                    value={recordingFps.toString()}
+                    onValueChange={(value) => setRecordingFps(parseInt(value))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="24">24 FPS</SelectItem>
+                      <SelectItem value="30">30 FPS</SelectItem>
+                      <SelectItem value="60">60 FPS</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Quality: {Math.round(recordingQuality * 100)}%</label>
+                  <Slider
+                    value={[recordingQuality]}
+                    onValueChange={([value]) => setRecordingQuality(value)}
+                    min={0.3}
+                    max={1}
+                    step={0.1}
+                  />
+                </div>
+
+                <Button onClick={handleStartRecording} className="gap-2 w-full">
                   <Film className="w-4 h-4" />
                   Start Recording
+                </Button>
+              </div>
+            )}
+
+            {(recordingState.status === 'recording' || recordingState.status === 'processing') && (
+              <div className="space-y-4">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                  <div
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-200"
+                    style={{ width: `${recordingState.progress}%` }}
+                  />
+                </div>
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  {recordingState.status === 'recording' 
+                    ? `Recording... ${Math.round(recordingState.progress)}%`
+                    : 'Processing video...'}
+                </div>
+                {recordingState.status === 'recording' && (
+                  <Button variant="outline" onClick={handleStopRecording} className="w-full">
+                    Stop Recording
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {recordingState.status === 'complete' && (
+              <div className="text-center py-4">
+                <div className="text-4xl mb-2">✅</div>
+                <p className="text-sm text-green-500 font-medium">Recording complete!</p>
+                <p className="text-xs text-gray-500 mt-1">Video downloaded automatically</p>
+                <Button 
+                  onClick={() => setRecordingState({ status: 'idle', progress: 0 })}
+                  variant="outline"
+                  className="mt-4"
+                >
+                  Record Another
+                </Button>
+              </div>
+            )}
+
+            {recordingState.status === 'error' && (
+              <div className="text-center py-4">
+                <div className="text-4xl mb-2">❌</div>
+                <p className="text-sm text-red-500 font-medium">Recording failed</p>
+                <p className="text-xs text-gray-500 mt-1">{recordingState.error}</p>
+                <Button 
+                  onClick={() => setRecordingState({ status: 'idle', progress: 0 })}
+                  variant="outline"
+                  className="mt-4"
+                >
+                  Try Again
                 </Button>
               </div>
             )}

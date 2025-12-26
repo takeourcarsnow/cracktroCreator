@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, Input, Slider, Switch, Textar
 import { ColorPicker, ColorPalettePicker } from '@/components/ui/color-picker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FONT_FAMILIES, BLEND_MODES } from '@/lib/constants';
-import type { Effect, BlendMode, ScrollTextEffect, SineWaveEffect, StarfieldEffect, PlasmaEffect, RasterBarsEffect, ParticlesEffect, CheckerboardEffect, LogoEffect, FireEffect, MatrixEffect, TunnelEffect, CopperBarsEffect, GlitchEffect, MetaballsEffect, DotMatrixEffect, RotoZoomEffect, TwisterEffect, Wireframe3DEffect, SpriteEffect } from '@/types';
+import type { Effect, BlendMode, ScrollTextEffect, SineWaveEffect, StarfieldEffect, PlasmaEffect, RasterBarsEffect, ParticlesEffect, CheckerboardEffect, LogoEffect, FireEffect, MatrixEffect, TunnelEffect, CopperBarsEffect, GlitchEffect, MetaballsEffect, DotMatrixEffect, RotoZoomEffect, TwisterEffect, Wireframe3DEffect, SpriteEffect, VHSEffect, BobsEffect, MoireEffect, LensFlareEffect, VectorBallsEffect } from '@/types';
 
 export function PropertiesPanel() {
   const { project, selectedEffectId, updateEffect } = useEditorStore();
@@ -140,6 +140,16 @@ function renderEffectProperties(
       return <Wireframe3DProperties effect={effect} onUpdate={onUpdate} />;
     case 'sprite':
       return <SpriteProperties effect={effect} onUpdate={onUpdate} />;
+    case 'vhs':
+      return <VHSProperties effect={effect} onUpdate={onUpdate} />;
+    case 'bobs':
+      return <BobsProperties effect={effect} onUpdate={onUpdate} />;
+    case 'moire':
+      return <MoireProperties effect={effect} onUpdate={onUpdate} />;
+    case 'lensflare':
+      return <LensFlareProperties effect={effect} onUpdate={onUpdate} />;
+    case 'vectorballs':
+      return <VectorBallsProperties effect={effect} onUpdate={onUpdate} />;
     default:
       return null;
   }
@@ -1492,6 +1502,413 @@ function SpriteProperties({
           />
         </>
       )}
+    </div>
+  );
+}
+
+function VHSProperties({
+  effect,
+  onUpdate,
+}: {
+  effect: VHSEffect;
+  onUpdate: (updates: Partial<VHSEffect>) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <Slider
+        label="Noise Intensity"
+        value={[effect.noiseIntensity * 100]}
+        onValueChange={([value]) => onUpdate({ noiseIntensity: value / 100 })}
+        min={0}
+        max={100}
+        step={5}
+        showValue
+      />
+      
+      <Slider
+        label="Scanline Intensity"
+        value={[effect.scanlineIntensity * 100]}
+        onValueChange={([value]) => onUpdate({ scanlineIntensity: value / 100 })}
+        min={0}
+        max={100}
+        step={5}
+        showValue
+      />
+      
+      <Slider
+        label="RGB Shift"
+        value={[effect.rgbShift]}
+        onValueChange={([value]) => onUpdate({ rgbShift: value })}
+        min={0}
+        max={20}
+        step={1}
+        showValue
+      />
+      
+      <Slider
+        label="Distortion"
+        value={[effect.distortion * 100]}
+        onValueChange={([value]) => onUpdate({ distortion: value / 100 })}
+        min={0}
+        max={100}
+        step={5}
+        showValue
+      />
+      
+      <Switch
+        label="Flickering"
+        checked={effect.flickering}
+        onCheckedChange={(checked) => onUpdate({ flickering: checked })}
+      />
+      
+      <Switch
+        label="Tracking Lines"
+        checked={effect.trackingLines}
+        onCheckedChange={(checked) => onUpdate({ trackingLines: checked })}
+      />
+    </div>
+  );
+}
+
+function BobsProperties({
+  effect,
+  onUpdate,
+}: {
+  effect: BobsEffect;
+  onUpdate: (updates: Partial<BobsEffect>) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <Slider
+        label="Bob Count"
+        value={[effect.bobCount]}
+        onValueChange={([value]) => onUpdate({ bobCount: value })}
+        min={3}
+        max={30}
+        step={1}
+        showValue
+      />
+      
+      <Slider
+        label="Speed"
+        value={[effect.speed]}
+        onValueChange={([value]) => onUpdate({ speed: value })}
+        min={0.5}
+        max={5}
+        step={0.5}
+        showValue
+      />
+      
+      <Slider
+        label="Size"
+        value={[effect.size]}
+        onValueChange={([value]) => onUpdate({ size: value })}
+        min={10}
+        max={80}
+        step={5}
+        showValue
+      />
+      
+      <Slider
+        label="Trail Length"
+        value={[effect.trailLength]}
+        onValueChange={([value]) => onUpdate({ trailLength: value })}
+        min={0}
+        max={20}
+        step={1}
+        showValue
+      />
+      
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Pattern
+        </label>
+        <Select
+          value={effect.pattern}
+          onValueChange={(value: 'circle' | 'wave' | 'lissajous' | 'spiral') => onUpdate({ pattern: value })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="circle">Circle</SelectItem>
+            <SelectItem value="wave">Wave</SelectItem>
+            <SelectItem value="lissajous">Lissajous</SelectItem>
+            <SelectItem value="spiral">Spiral</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      
+      <Switch
+        label="Glow Effect"
+        checked={effect.glowEnabled}
+        onCheckedChange={(checked) => onUpdate({ glowEnabled: checked })}
+      />
+      
+      <ColorPalettePicker
+        label="Colors"
+        colors={effect.colors}
+        onChange={(colors) => onUpdate({ colors })}
+      />
+    </div>
+  );
+}
+
+function MoireProperties({
+  effect,
+  onUpdate,
+}: {
+  effect: MoireEffect;
+  onUpdate: (updates: Partial<MoireEffect>) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Pattern Type
+        </label>
+        <Select
+          value={effect.pattern}
+          onValueChange={(value: 'circles' | 'lines' | 'grid') => onUpdate({ pattern: value })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="circles">Circles</SelectItem>
+            <SelectItem value="lines">Lines</SelectItem>
+            <SelectItem value="grid">Grid</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      
+      <Slider
+        label="Speed"
+        value={[effect.speed]}
+        onValueChange={([value]) => onUpdate({ speed: value })}
+        min={0.5}
+        max={5}
+        step={0.5}
+        showValue
+      />
+      
+      <Slider
+        label="Spacing"
+        value={[effect.spacing]}
+        onValueChange={([value]) => onUpdate({ spacing: value })}
+        min={5}
+        max={50}
+        step={5}
+        showValue
+      />
+      
+      <Slider
+        label="Offset X"
+        value={[effect.offsetX]}
+        onValueChange={([value]) => onUpdate({ offsetX: value })}
+        min={0}
+        max={100}
+        step={5}
+        showValue
+      />
+      
+      <Slider
+        label="Offset Y"
+        value={[effect.offsetY]}
+        onValueChange={([value]) => onUpdate({ offsetY: value })}
+        min={0}
+        max={100}
+        step={5}
+        showValue
+      />
+      
+      <ColorPalettePicker
+        label="Colors"
+        colors={effect.colors}
+        onChange={(colors) => onUpdate({ colors })}
+      />
+    </div>
+  );
+}
+
+function LensFlareProperties({
+  effect,
+  onUpdate,
+}: {
+  effect: LensFlareEffect;
+  onUpdate: (updates: Partial<LensFlareEffect>) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <Slider
+        label="X Position (%)"
+        value={[effect.x]}
+        onValueChange={([value]) => onUpdate({ x: value })}
+        min={0}
+        max={100}
+        step={5}
+        showValue
+      />
+      
+      <Slider
+        label="Y Position (%)"
+        value={[effect.y]}
+        onValueChange={([value]) => onUpdate({ y: value })}
+        min={0}
+        max={100}
+        step={5}
+        showValue
+      />
+      
+      <Slider
+        label="Size"
+        value={[effect.size]}
+        onValueChange={([value]) => onUpdate({ size: value })}
+        min={50}
+        max={300}
+        step={10}
+        showValue
+      />
+      
+      <Slider
+        label="Intensity"
+        value={[effect.intensity * 100]}
+        onValueChange={([value]) => onUpdate({ intensity: value / 100 })}
+        min={10}
+        max={200}
+        step={10}
+        showValue
+      />
+      
+      <Slider
+        label="Ghost Count"
+        value={[effect.ghostCount]}
+        onValueChange={([value]) => onUpdate({ ghostCount: value })}
+        min={0}
+        max={10}
+        step={1}
+        showValue
+      />
+      
+      <Switch
+        label="Anamorphic Streak"
+        checked={effect.anamorphic}
+        onCheckedChange={(checked) => onUpdate({ anamorphic: checked })}
+      />
+      
+      <ColorPalettePicker
+        label="Colors"
+        colors={effect.colors}
+        onChange={(colors) => onUpdate({ colors })}
+      />
+    </div>
+  );
+}
+
+function VectorBallsProperties({
+  effect,
+  onUpdate,
+}: {
+  effect: VectorBallsEffect;
+  onUpdate: (updates: Partial<VectorBallsEffect>) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <Slider
+        label="Ball Count"
+        value={[effect.ballCount]}
+        onValueChange={([value]) => onUpdate({ ballCount: value })}
+        min={8}
+        max={64}
+        step={4}
+        showValue
+      />
+      
+      <Slider
+        label="Ball Size"
+        value={[effect.size]}
+        onValueChange={([value]) => onUpdate({ size: value })}
+        min={5}
+        max={30}
+        step={2}
+        showValue
+      />
+      
+      <Slider
+        label="Speed"
+        value={[effect.speed]}
+        onValueChange={([value]) => onUpdate({ speed: value })}
+        min={0.5}
+        max={5}
+        step={0.5}
+        showValue
+      />
+      
+      <Slider
+        label="Perspective"
+        value={[effect.perspective]}
+        onValueChange={([value]) => onUpdate({ perspective: value })}
+        min={100}
+        max={1000}
+        step={50}
+        showValue
+      />
+      
+      <Slider
+        label="Rotation X"
+        value={[effect.rotationX * 100]}
+        onValueChange={([value]) => onUpdate({ rotationX: value / 100 })}
+        min={0}
+        max={500}
+        step={25}
+        showValue
+      />
+      
+      <Slider
+        label="Rotation Y"
+        value={[effect.rotationY * 100]}
+        onValueChange={([value]) => onUpdate({ rotationY: value / 100 })}
+        min={0}
+        max={500}
+        step={25}
+        showValue
+      />
+      
+      <Slider
+        label="Rotation Z"
+        value={[effect.rotationZ * 100]}
+        onValueChange={([value]) => onUpdate({ rotationZ: value / 100 })}
+        min={0}
+        max={500}
+        step={25}
+        showValue
+      />
+      
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Formation
+        </label>
+        <Select
+          value={effect.formation}
+          onValueChange={(value: 'cube' | 'sphere' | 'torus' | 'wave') => onUpdate({ formation: value })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="cube">Cube</SelectItem>
+            <SelectItem value="sphere">Sphere</SelectItem>
+            <SelectItem value="torus">Torus</SelectItem>
+            <SelectItem value="wave">Wave</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      
+      <ColorPalettePicker
+        label="Colors"
+        colors={effect.colors}
+        onChange={(colors) => onUpdate({ colors })}
+      />
     </div>
   );
 }

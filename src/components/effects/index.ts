@@ -17,3 +17,10 @@ export * from './rotozoom';
 export * from './twister';
 export * from './wireframe-3d';
 export * from './sprite';
+
+// New effects (v2)
+export * from './vhs';
+export * from './bobs';
+export * from './moire';
+export * from './lens-flare';
+export * from './vector-balls';

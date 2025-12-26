@@ -98,4 +98,108 @@ export const TEMPLATES: Template[] = [
     ],
     backgroundColor: '#0D0221',
   },
+  {
+    id: 'vhs-retro',
+    name: 'VHS Retro',
+    description: 'Nostalgic VHS tape effect with static and tracking',
+    effects: [
+      { type: 'starfield', overrides: { starCount: 50, speed: 0.5 } },
+      { type: 'logo', overrides: { text: 'REWIND', colors: ['#FF6B6B', '#4ECDC4'] } },
+      { type: 'vhs', overrides: { noiseIntensity: 0.3, scanlineIntensity: 0.5, trackingLines: true } },
+    ],
+    backgroundColor: '#1a1a1a',
+  },
+  {
+    id: 'bouncing-bobs',
+    name: 'Bouncing Bobs',
+    description: 'Classic Amiga bobs with trails',
+    effects: [
+      { type: 'plasma', overrides: { opacity: 0.3 } },
+      { type: 'bobs', overrides: { bobCount: 12, pattern: 'lissajous', trailLength: 8 } },
+      { type: 'scrolltext', overrides: { yPosition: 90, text: 'BOBS DEMO... CLASSIC AMIGA STYLE!' } },
+    ],
+    backgroundColor: '#000000',
+  },
+  {
+    id: 'vector-world',
+    name: 'Vector World',
+    description: '3D vector balls with wireframe',
+    effects: [
+      { type: 'vectorballs', overrides: { formation: 'sphere', ballCount: 32 } },
+      { type: 'wireframe3d', overrides: { shape: 'cube', opacity: 0.3 } },
+    ],
+    backgroundColor: '#000022',
+  },
+  {
+    id: 'moire-madness',
+    name: 'Moiré Madness',
+    description: 'Hypnotic moiré interference patterns',
+    effects: [
+      { type: 'moire', overrides: { pattern: 'circles', colors: ['#FF00FF', '#00FFFF'] } },
+      { type: 'sinewave', overrides: { yPosition: 50, colors: ['#FFFFFF', '#FFFF00'] } },
+    ],
+    backgroundColor: '#000000',
+  },
+  {
+    id: 'lens-flare-cinema',
+    name: 'Lens Flare Cinema',
+    description: 'Cinematic lens flare with starfield',
+    effects: [
+      { type: 'starfield', overrides: { starCount: 300, speed: 1 } },
+      { type: 'lensflare', overrides: { size: 150, anamorphic: true } },
+      { type: 'logo', overrides: { text: 'CINEMA', fontSize: 72 } },
+    ],
+    backgroundColor: '#000000',
+  },
+  {
+    id: 'rotozoom-classic',
+    name: 'RotoZoom Classic',
+    description: 'Classic rotozoom effect with text overlay',
+    effects: [
+      { type: 'rotozoom', overrides: { pattern: 'checkerboard', rotationSpeed: 1, zoomSpeed: 0.5 } },
+      { type: 'scrolltext', overrides: { yPosition: 85, useGradient: true } },
+    ],
+    backgroundColor: '#000000',
+  },
+  {
+    id: 'metaballs-glow',
+    name: 'Metaballs Glow',
+    description: 'Glowing metaballs with particle effects',
+    effects: [
+      { type: 'metaballs', overrides: { ballCount: 5, colors: CRACKTRO_PALETTES.neon } },
+      { type: 'particles', overrides: { particleCount: 50, opacity: 0.5 } },
+    ],
+    backgroundColor: '#0a0a0a',
+  },
+  {
+    id: 'dot-matrix-display',
+    name: 'Dot Matrix Display',
+    description: 'LED-style dot matrix scrolling display',
+    effects: [
+      { type: 'dotmatrix', overrides: { text: 'WELCOME TO THE SHOW...', color: '#FF0000' } },
+      { type: 'starfield', overrides: { opacity: 0.3, starCount: 100 } },
+    ],
+    backgroundColor: '#111111',
+  },
+  {
+    id: 'glitch-art',
+    name: 'Glitch Art',
+    description: 'Digital glitch effect with cyberpunk vibes',
+    effects: [
+      { type: 'plasma', overrides: { opacity: 0.5 } },
+      { type: 'glitch', overrides: { intensity: 0.7, colorShift: true, scanlines: true } },
+      { type: 'logo', overrides: { text: 'ERROR', colors: ['#FF0000', '#00FF00', '#0000FF'] } },
+    ],
+    backgroundColor: '#000000',
+  },
+  {
+    id: 'twister-demo',
+    name: 'Twister Demo',
+    description: 'Classic twister effect with copper bars',
+    effects: [
+      { type: 'twister', overrides: { barCount: 16, amplitude: 100 } },
+      { type: 'copperbars', overrides: { opacity: 0.4, barHeight: 2 } },
+    ],
+    backgroundColor: '#000000',
+  },
 ];
